@@ -1,0 +1,23 @@
+{
+  "name": "z-agent-agent-core",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^1.0.12",
+    "@ai-sdk/provider": "^3.0.3",
+    "ai": "^6.0.116",
+    "zod": "^3.25.76",
+    "z-agent-shared": "workspace:*",
+    "z-agent-tools": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.8.6",
+    "typescript": "^5.6.3"
+  }
+}
