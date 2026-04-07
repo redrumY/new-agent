@@ -1,19 +1,56 @@
 "use client";
-
+// 详见 https://ai-sdk.dev/docs/ai-sdk-ui/chatbot
+import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 
 export default function ChatPage() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: "/api/chat",
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({
+      api: "/chat/api/chat",
+    }),
   });
+  const [input, setInput] = useState("");
+
+  const isLoading = status === "streaming" || status === "submitted";
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    await sendMessage({ text: input });
+    setInput("");
+  };
+
+  const getMessageText = (message: (typeof messages)[number]) => {
+    return message.parts
+      .filter((part) => part.type === "text")
+      .map((part) => part.text)
+      .join("");
+  };
 
   return (
-    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
       {/* Header */}
-      <header style={{ padding: "1rem 1.5rem", borderBottom: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <header
+        style={{
+          padding: "1rem 1.5rem",
+          borderBottom: "1px solid #e5e7eb",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <h1 style={{ fontSize: "1.25rem", fontWeight: 600 }}>Z-Agent Chat</h1>
         <button
-          onClick={() => window.location.href = "/"}
+          onClick={() => (window.location.href = "/")}
           style={{
             padding: "0.5rem 1rem",
             fontSize: "0.875rem",
@@ -35,7 +72,13 @@ export default function ChatPage() {
               <p style={{ color: "#6b7280", marginBottom: "1rem" }}>
                 Start a conversation with Z-Agent
               </p>
-              <div style={{ textAlign: "left", fontSize: "0.875rem", color: "#6b7280" }}>
+              <div
+                style={{
+                  textAlign: "left",
+                  fontSize: "0.875rem",
+                  color: "#6b7280",
+                }}
+              >
                 <p style={{ marginBottom: "0.5rem" }}>Try asking:</p>
                 <ul style={{ paddingLeft: "1.5rem", lineHeight: "1.75" }}>
                   <li>"What can you help me with?"</li>
@@ -50,7 +93,8 @@ export default function ChatPage() {
                 key={message.id}
                 style={{
                   display: "flex",
-                  justifyContent: message.role === "user" ? "flex-end" : "flex-start",
+                  justifyContent:
+                    message.role === "user" ? "flex-end" : "flex-start",
                   marginBottom: "1rem",
                 }}
               >
@@ -59,21 +103,36 @@ export default function ChatPage() {
                     maxWidth: "80%",
                     padding: "0.75rem 1rem",
                     borderRadius: "0.5rem",
-                    backgroundColor: message.role === "user" ? "#000" : "#f3f4f6",
+                    backgroundColor:
+                      message.role === "user" ? "#000" : "#f3f4f6",
                     color: message.role === "user" ? "#fff" : "#000",
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-word",
                   }}
                 >
-                  {message.content}
+                  {getMessageText(message)}
                 </div>
               </div>
             ))
           )}
           {isLoading && (
-            <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "1rem" }}>
-              <div style={{ padding: "0.75rem 1rem", borderRadius: "0.5rem", backgroundColor: "#f3f4f6" }}>
-                <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>Thinking...</p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                marginBottom: "1rem",
+              }}
+            >
+              <div
+                style={{
+                  padding: "0.75rem 1rem",
+                  borderRadius: "0.5rem",
+                  backgroundColor: "#f3f4f6",
+                }}
+              >
+                <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>
+                  Thinking...
+                </p>
               </div>
             </div>
           )}
@@ -82,10 +141,18 @@ export default function ChatPage() {
 
       {/* Input */}
       <div style={{ padding: "1rem", borderTop: "1px solid #e5e7eb" }}>
-        <form onSubmit={handleSubmit} style={{ maxWidth: "800px", margin: "0 auto", display: "flex", gap: "0.5rem" }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            maxWidth: "800px",
+            margin: "0 auto",
+            display: "flex",
+            gap: "0.5rem",
+          }}
+        >
           <input
             value={input}
-            onChange={handleInputChange}
+            onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
             disabled={isLoading}
             style={{
@@ -99,16 +166,16 @@ export default function ChatPage() {
           />
           <button
             type="submit"
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || !input?.trim()}
             style={{
               padding: "0.75rem 1.5rem",
               fontSize: "1rem",
               fontWeight: 500,
               color: "white",
-              backgroundColor: !isLoading && input.trim() ? "#000" : "#9ca3af",
+              backgroundColor: !isLoading && input?.trim() ? "#000" : "#9ca3af",
               border: "none",
               borderRadius: "0.5rem",
-              cursor: !isLoading && input.trim() ? "pointer" : "not-allowed",
+              cursor: !isLoading && input?.trim() ? "pointer" : "not-allowed",
             }}
           >
             Send

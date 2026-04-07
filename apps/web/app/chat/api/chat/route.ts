@@ -1,5 +1,12 @@
-import { anthropic } from "@ai-sdk/anthropic";
-import { streamText } from "ai";
+import { streamText, convertToModelMessages } from "ai";
+import { createAnthropic } from "@ai-sdk/anthropic";
+
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  baseURL: process.env.ANTHROPIC_BASE_URL,
+});
+
+const model = anthropic(process.env.MODEL_ID || "claude-3-5-sonnet-20241022");
 
 export const maxDuration = 60;
 
@@ -7,9 +14,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = streamText({
-    model: anthropic("claude-3-5-sonnet-20241022", {
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    }),
+    model,
     system: `You are Z-Agent, an AI assistant designed to help users understand Agent development.
 
 Your capabilities:
@@ -19,8 +24,8 @@ Your capabilities:
 - Guide users in learning AI engineering
 
 Be concise, friendly, and educational. When asked about technical topics, provide clear explanations with examples when appropriate.`,
-    messages,
+    messages: await convertToModelMessages(messages),
   });
 
-  return result.toDataStreamResponse();
+  return result.toUIMessageStreamResponse();
 }

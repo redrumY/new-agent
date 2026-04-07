@@ -10,6 +10,8 @@ pnpm install
 
 # Configure your API key
 echo "ANTHROPIC_API_KEY=sk-ant-xxxxx" > apps/web/.env
+echo "ANTHROPIC_BASE_URL=xxx" > apps/web/.env
+echo "MODEL_ID=xxx" > apps/web/.env
 
 # Start development server
 pnpm dev
