@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export default function ChatPage() {
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
@@ -11,32 +8,36 @@ export default function ChatPage() {
   });
 
   return (
-    <main className="min-h-screen flex flex-col">
+    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "system-ui, -apple-system, sans-serif" }}>
       {/* Header */}
-      <header className="border-b px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Z-Agent Chat</h1>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => window.location.href = "/"}
-          >
-            Back
-          </Button>
-        </div>
+      <header style={{ padding: "1rem 1.5rem", borderBottom: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <h1 style={{ fontSize: "1.25rem", fontWeight: 600 }}>Z-Agent Chat</h1>
+        <button
+          onClick={() => window.location.href = "/"}
+          style={{
+            padding: "0.5rem 1rem",
+            fontSize: "0.875rem",
+            backgroundColor: "transparent",
+            border: "1px solid #e5e7eb",
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          }}
+        >
+          Back
+        </button>
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div style={{ flex: 1, overflowY: "auto" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto", padding: "1.5rem" }}>
           {messages.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">
+            <div style={{ textAlign: "center", padding: "3rem 0" }}>
+              <p style={{ color: "#6b7280", marginBottom: "1rem" }}>
                 Start a conversation with Z-Agent
               </p>
-              <div className="mt-4 space-y-2 text-sm text-muted-foreground">
-                <p>Try asking:</p>
-                <ul className="list-disc list-inside">
+              <div style={{ textAlign: "left", fontSize: "0.875rem", color: "#6b7280" }}>
+                <p style={{ marginBottom: "0.5rem" }}>Try asking:</p>
+                <ul style={{ paddingLeft: "1.5rem", lineHeight: "1.75" }}>
                   <li>"What can you help me with?"</li>
                   <li>"Explain how Agent Loop works"</li>
                   <li>"Help me understand Plan/Build architecture"</li>
@@ -47,24 +48,32 @@ export default function ChatPage() {
             messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                style={{
+                  display: "flex",
+                  justifyContent: message.role === "user" ? "flex-end" : "flex-start",
+                  marginBottom: "1rem",
+                }}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  }`}
+                  style={{
+                    maxWidth: "80%",
+                    padding: "0.75rem 1rem",
+                    borderRadius: "0.5rem",
+                    backgroundColor: message.role === "user" ? "#000" : "#f3f4f6",
+                    color: message.role === "user" ? "#fff" : "#000",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                  }}
                 >
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  {message.content}
                 </div>
               </div>
             ))
           )}
           {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-muted rounded-lg px-4 py-2">
-                <p className="text-sm text-muted-foreground">Thinking...</p>
+            <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "1rem" }}>
+              <div style={{ padding: "0.75rem 1rem", borderRadius: "0.5rem", backgroundColor: "#f3f4f6" }}>
+                <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>Thinking...</p>
               </div>
             </div>
           )}
@@ -72,18 +81,38 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="border-t p-4">
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto flex gap-2">
-          <Input
+      <div style={{ padding: "1rem", borderTop: "1px solid #e5e7eb" }}>
+        <form onSubmit={handleSubmit} style={{ maxWidth: "800px", margin: "0 auto", display: "flex", gap: "0.5rem" }}>
+          <input
             value={input}
             onChange={handleInputChange}
             placeholder="Type your message..."
             disabled={isLoading}
-            className="flex-1"
+            style={{
+              flex: 1,
+              padding: "0.75rem 1rem",
+              fontSize: "1rem",
+              border: "1px solid #e5e7eb",
+              borderRadius: "0.5rem",
+              outline: "none",
+            }}
           />
-          <Button type="submit" disabled={isLoading || !input.trim()}>
+          <button
+            type="submit"
+            disabled={isLoading || !input.trim()}
+            style={{
+              padding: "0.75rem 1.5rem",
+              fontSize: "1rem",
+              fontWeight: 500,
+              color: "white",
+              backgroundColor: !isLoading && input.trim() ? "#000" : "#9ca3af",
+              border: "none",
+              borderRadius: "0.5rem",
+              cursor: !isLoading && input.trim() ? "pointer" : "not-allowed",
+            }}
+          >
             Send
-          </Button>
+          </button>
         </form>
       </div>
     </main>
