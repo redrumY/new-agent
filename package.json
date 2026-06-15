@@ -1,0 +1,32 @@
+{
+  "name": "typescript-claude-code-agent",
+  "version": "0.1.0",
+  "description": "A TypeScript learning implementation of a Claude Code style agent loop.",
+  "type": "module",
+  "scripts": {
+    "s01": "tsx s01-agent-loop.ts",
+    "s02": "tsx s02-tool-use.ts",
+    "s03": "tsx s03-todo-write.ts",
+    "s04": "tsx s04-subagent.ts",
+    "s05": "tsx s05-skill-loading.ts",
+    "s06": "tsx s06-context-compact.ts",
+    "s07": "tsx s07-permission-system.ts",
+    "s08": "tsx s08-hook-system.ts",
+    "s09": "tsx s09-memory-system.ts",
+    "full-agent": "tsx s-full-agent.ts",
+    "memory-system": "tsx s09-memory-system.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.86.1",
+    "dotenv": "^17.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.6",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
